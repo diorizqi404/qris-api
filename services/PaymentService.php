@@ -39,6 +39,11 @@ class PaymentService
         // Set all transaction status to expired
         self::checkAllTransactionExpiry();
 
+        // Check if amount is valid
+        if (!is_numeric($amount) || $amount < 1000) {
+            return ['status' => 'error', 'message' => 'Minimum amount is 1.000'];
+        }
+
         // Check for recent transactions with same amount, within 5 minutes, and status 'pending'
         $stmt = $conn->prepare("SELECT COUNT(*) FROM transactions WHERE invoice = ? AND created_at >= NOW() - INTERVAL 1440 MINUTE AND status = 'pending'");
         $stmt->bind_param("i", $amount);
@@ -49,7 +54,7 @@ class PaymentService
 
         // Adjust invoice amount if needed to avoid duplicates
         $fee = ($trxCount >= 1) ? $trxCount : 0;
-        $fee += $amount * 0.07; // Combine rate into fee
+        $fee += $amount * 0.007; // Combine rate into fee
         $invoice = $amount + $fee;
 
         // Generate QRIS code with amount
@@ -203,14 +208,6 @@ class PaymentService
         // Check payment using OkeConnect API
         $paymentData = self::checkOkeConnectPayment($merchant['memberid'], $merchant['apiid'], $uniquecode);
 
-        if (!$paymentData) {
-            return [
-                'status' => 'failed',
-                'code' => 500,
-                'message' => 'Failed to check payment status'
-            ];
-        }
-
         // Update transaction status in the database if payment is successful
         if ($paymentData['status'] === 'success') {
             $conn = getDbConnection();
@@ -350,10 +347,11 @@ class PaymentService
             ];
         }
 
+        // biasanya ketika okeconnect tidak memiliki transaksi (kosong)
         return [
-            'status' => 'failed',
-            'code' => 500,
-            'message' => 'Failed to check payment status'
+            'status' => 'unpaid',
+            'code' => 404,
+            'message' => 'There is no data maybe the buyer hasnt transferred or hasnt paid',
         ];
     }
 }
