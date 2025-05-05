@@ -342,12 +342,18 @@ class PaymentService
                     'message' => 'There is no data maybe the buyer hasnt transferred or hasnt paid'
                 ];
             }
+        } else if (isset($decodedResponse['status']) && $decodedResponse['status'] === 'failed') {
+            return [
+                'status' => 'failed',
+                'code' => 500,
+                'message' => 'Invalid credential'
+            ];
         }
 
         return [
             'status' => 'failed',
             'code' => 500,
-            'message' => 'Invalid credential'
+            'message' => 'Failed to check payment status'
         ];
     }
 }
