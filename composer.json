@@ -1,0 +1,13 @@
+{
+    "require": {
+        "vlucas/phpdotenv": "^5.6",
+        "chillerlan/php-qrcode": "^5.0",
+        "zircote/swagger-php": "^5.0",
+        "cloudinary/cloudinary_php": "^2"
+    },
+    "scripts": {
+        "update-api-url": [
+            "php api-docs/generate-openapi.php"
+        ]
+    }
+}

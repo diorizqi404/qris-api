@@ -1,0 +1,323 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API PAYHUB",
+        "description": "This is a API documentation for PayHub.",
+        "contact": {
+            "email": "yourmail@example.com"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http:\/\/localhost:8000\/api"
+        }
+    ],
+    "tags": [
+        {
+            "name": "merchant",
+            "description": "Everything about your merchant"
+        },
+        {
+            "name": "payment",
+            "description": "Everything about your payment"
+        }
+    ],
+    "paths": {
+        "/addmerchant.php": {
+            "get": {
+                "tags": [
+                    "merchant"
+                ],
+                "summary": "Add a new merchant.",
+                "description": "Add a new merchant to the system.",
+                "parameters": [
+                    {
+                        "name": "key",
+                        "in": "query",
+                        "description": "Admin key for authentication",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "apikey",
+                        "in": "query",
+                        "description": "API key merchant want to add",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "apiid",
+                        "in": "query",
+                        "description": "API ID for the merchant",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "memberid",
+                        "in": "query",
+                        "description": "Member ID for the merchant",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "qris",
+                        "in": "query",
+                        "description": "QRIS code for the merchant",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "apikey": {
+                                            "type": "string",
+                                            "example": "ExampleAPIKey"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Success add merchant"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/deletemerchant.php": {
+            "get": {
+                "tags": [
+                    "merchant"
+                ],
+                "summary": "Delete a merchant.",
+                "description": "Delete a merchant from the system.",
+                "parameters": [
+                    {
+                        "name": "key",
+                        "in": "query",
+                        "description": "Admin key for authentication",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "apikey",
+                        "in": "query",
+                        "description": "API key want to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data with apikey 'ExampleAPIKey' has been successfully deleted"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/createpayment.php": {
+            "get": {
+                "tags": [
+                    "payment"
+                ],
+                "summary": "Create a new payment.",
+                "description": "Create a new payment QRIS",
+                "parameters": [
+                    {
+                        "name": "amount",
+                        "in": "query",
+                        "description": "Amount to be paid",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "apikey",
+                        "in": "query",
+                        "description": "API key for authentication",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "amount": {
+                                                    "type": "string",
+                                                    "example": "10000"
+                                                },
+                                                "fee": {
+                                                    "type": "integer",
+                                                    "example": 0
+                                                },
+                                                "uniquecode": {
+                                                    "type": "string",
+                                                    "example": "67f06ffd564a4"
+                                                },
+                                                "invoice": {
+                                                    "type": "integer",
+                                                    "example": 10000
+                                                },
+                                                "qris": {
+                                                    "type": "string",
+                                                    "example": "https:\/\/iili.io\/35raAG4.png"
+                                                },
+                                                "expired": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2025-04-05 06:49:18"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/checkpayment.php": {
+            "get": {
+                "tags": [
+                    "payment"
+                ],
+                "summary": "Check payment status.",
+                "description": "Check the status of a payment.",
+                "parameters": [
+                    {
+                        "name": "apikey",
+                        "in": "query",
+                        "description": "API key for authentication",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "uniquecode",
+                        "in": "query",
+                        "description": "Unique code for the payment",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "amount": {
+                                                    "type": "string",
+                                                    "example": "10000"
+                                                },
+                                                "fee": {
+                                                    "type": "integer",
+                                                    "example": 0
+                                                },
+                                                "uniquecode": {
+                                                    "type": "string",
+                                                    "example": "67f06ffd564a4"
+                                                },
+                                                "invoice": {
+                                                    "type": "integer",
+                                                    "example": 10000
+                                                },
+                                                "qris": {
+                                                    "type": "string",
+                                                    "example": "https:\/\/iili.io\/35raAG4.png"
+                                                },
+                                                "expired": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2025-04-05 06:49:18"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
