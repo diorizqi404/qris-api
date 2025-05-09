@@ -1,7 +1,7 @@
 <?php
 
 /**
- * API endpoint for createing a payment
+ * API endpoint for checking payment status pending
  */
 require_once __DIR__ . '../../config/config.php';
 require_once __DIR__ . '../../services/ValidationService.php';
@@ -9,18 +9,12 @@ require_once __DIR__ . '../../services/PaymentService.php';
 
 try {
     // Get parameters
-    $amount = $_GET['amount'] ?? null;
     $apikey = $_GET['apikey'] ?? null;
-    // $validtime = $_GET['validtime'] ?? null;
-    // $uniquecode = $_GET['uniquecode'] ?? null;
-    // $memberid = $_GET['memberid'] ?? null;
-    // $apiid = $_GET['apiid'] ?? strval($_GET['apiid'] ?? '');
 
     // Validate required parameters
     list($isValid, $errorMessage) = ValidationService::validateRequired([
         'apikey' => $apikey,
-        'amount' => $amount,
-    ], ['apikey', 'amount']);
+    ], ['apikey']);
 
     if (!$isValid) {
         echo json_encode([
@@ -30,14 +24,14 @@ try {
         exit;
     }
 
-    $createPayment = PaymentService::createPayment($apikey, $amount);
-    if ($createPayment) {
-        echo json_encode($createPayment);
+    $checkPaymentPending = PaymentService::checkPaymentPending($apikey);
+    if ($checkPaymentPending) {
+        echo json_encode($checkPaymentPending);
         exit;
     } else {
         echo json_encode([
             "status" => "error",
-            "message" => "Failed to save transaction to database"
+            "message" => "Failed to check transaction pending to database"
         ]);
     }
 } catch (Exception $e) {

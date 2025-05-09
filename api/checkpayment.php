@@ -1,7 +1,7 @@
 <?php
 
 /**
- * API endpoint for adding a new merchant
+ * API endpoint for checking payment status
  */
 require_once __DIR__ . '../../config/config.php';
 require_once __DIR__ . '../../services/ValidationService.php';

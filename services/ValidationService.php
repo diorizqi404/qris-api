@@ -78,7 +78,7 @@ class ValidationService {
             return [false, "Amount must be greater than 0 and a valid number"];
         }
         
-        if ($amount < 100 || $amount > 10000000) {
+        if ($amount < 1000 || $amount > 10000000) {
             return [false, "Amount must be between 100 and 10,000,000"];
         }
         

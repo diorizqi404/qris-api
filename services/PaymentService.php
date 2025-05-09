@@ -19,7 +19,7 @@ class PaymentService
      * @param int $validtime Time until expiration in seconds
      * @return array Transaction details or error
      */
-    public static function createPayment($apikey, $amount, $uniquecode)
+    public static function createPayment($apikey, $amount)
     {
         $conn = getDbConnection();
 
@@ -29,15 +29,13 @@ class PaymentService
         }
 
         // Generate unique code if not provided
-        if ($uniquecode == null) {
-            $uniquecode = uniqid();
-        }
+        $uniquecode = uniqid();
 
         // Calculate expiration time
         $expiredTime = date('Y-m-d H:i:s', time() + 1440 * 60); // 24 hours
 
         // Set all transaction status to expired
-        self::checkAllTransactionExpiry();
+        self::updateTransactionToExpiry();
 
         // Check if amount is valid
         if (!is_numeric($amount) || $amount < 1000) {
@@ -108,7 +106,7 @@ class PaymentService
     /**
      * Check all transaction expiry and update status to 'failed'
      */
-    public static function checkAllTransactionExpiry()
+    public static function updateTransactionToExpiry()
     {
         $conn = getDbConnection();
 
@@ -159,7 +157,7 @@ class PaymentService
                 $expiredTimestamp = strtotime($expired);
 
                 // Set all transaction status to expired
-                self::checkAllTransactionExpiry();
+                self::updateTransactionToExpiry();
 
                 return [
                     'expired' => ($expiredTimestamp < time()),
@@ -353,5 +351,56 @@ class PaymentService
             'code' => 404,
             'message' => 'There is no data maybe the buyer hasnt transferred or hasnt paid',
         ];
+    }
+
+    /**
+     * Get payment status pending
+     * 
+     * @param string $apikey Merchant API key
+     * @return array Payment status and details
+     */
+    public static function checkPaymentPending($apikey)
+    {
+        try {
+            self::updateTransactionToExpiry();
+            $transactions = [];
+
+            $conn = getDbConnection();
+            $stmt = $conn->prepare("SELECT * FROM transactions WHERE apikey = ? AND status = 'pending'");
+            $stmt->bind_param("s", $apikey);
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            while ($row = $result->fetch_assoc()) {
+                $transactions[] = [
+                    'uniquecode' => $row['uniquecode'],
+                    'fee' => $row['fee'],
+                    'amount' => $row['invoice'],
+                    'invoice' => $row['invoice'] + $row['fee'],
+                    'expired' => $row['expired'],
+                    'created_at' => $row['created_at']
+                ];
+            }
+
+            $stmt->close();
+
+            if (empty($transactions)) {
+                return [
+                    'status' => 'not_found',
+                    'message' => 'No pending transactions found'
+                ];
+            }
+
+            return [
+                'status' => 'success',
+                'code' => 200,
+                'data' => $transactions
+            ];
+        } catch (Exception $e) {
+            return [
+                'status' => 'error',
+                'message' => 'Failed to retrieve payment status pending' . $e->getMessage()
+            ];
+        }
     }
 }

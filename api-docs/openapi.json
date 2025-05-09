@@ -318,6 +318,78 @@
                     }
                 }
             }
+        },
+        "/checkpaymentpending.php": {
+            "get": {
+                "tags": [
+                    "payment"
+                ],
+                "summary": "Check payment status pending.",
+                "description": "Check the status of a payment pending.",
+                "parameters": [
+                    {
+                        "name": "apikey",
+                        "in": "query",
+                        "description": "API key for authentication",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "amount": {
+                                                    "type": "string",
+                                                    "example": "10000"
+                                                },
+                                                "fee": {
+                                                    "type": "integer",
+                                                    "example": 0
+                                                },
+                                                "uniquecode": {
+                                                    "type": "string",
+                                                    "example": "67f06ffd564a4"
+                                                },
+                                                "invoice": {
+                                                    "type": "integer",
+                                                    "example": 10000
+                                                },
+                                                "qris": {
+                                                    "type": "string",
+                                                    "example": "https:\/\/iili.io\/35raAG4.png"
+                                                },
+                                                "expired": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2025-04-05 06:49:18"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
